@@ -8,6 +8,7 @@ var gLevel = {
 
 function init() {
 	gBoard = buildBoard()
+	setMinesNegsCount()
 	console.table(gBoard)
 	renderBoard(gBoard)
 }
@@ -57,6 +58,22 @@ function renderBoard(gBoard) {
 }
 
 function setMinesNegsCount() {
-
+	for (var i = 0; i < gBoard.length; i++) {
+		for (var j = 0; j < gBoard[0].length; j++) {
+			gBoard[i][j].minesAroundCount = minesAroundCount(i, j)
+		}
+	}
 }
-function minesAroundCount() { }
+
+function minesAroundCount(cellI, cellJ) {
+	var count = 0
+	for (var i = cellI - 1; i <= cellI + 1; i++) {
+		if (i < 0 || i >= gBoard.length) continue
+		for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+			if (j < 0 || j >= gBoard[i].length) continue
+			if (i === cellI && j === cellJ) continue
+			if (gBoard[i][j].isMine)count++
+		}
+	}
+	return count
+}
