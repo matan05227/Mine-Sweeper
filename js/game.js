@@ -10,7 +10,7 @@ function init() {
 	gBoard = buildBoard()
 	setMinesNegsCount()
 	console.table(gBoard)
-	renderBoard(gBoard)
+	renderBoard()
 }
 
 function buildBoard() {
@@ -34,20 +34,21 @@ function buildBoard() {
 	return board
 }
 
-function renderBoard(gBoard) {
+function renderBoard() {
 	var strHTML = '<table><tbody>'
 	for (var i = 0; i < gBoard.length; i++) {
 		strHTML += '<tr>'
 		for (var j = 0; j < gBoard.length; j++) {
 			const cell = gBoard[i][j]
 			const className = `cell cell-${i}-${j}`
+			var content=''
+			if (cell.isRevealed) {
+				if (cell.isMine) content = mine
+				else content = cell.minesAroundCount
+			}
 
-			if (cell.isMine)
-				var content = mine
-			else
-				var content = cell.minesAroundCount
 
-			strHTML += `<td class="${className}">${content}</td>`
+			strHTML += `<td class="${className}" onclick="onCellClicked(this,${i}, ${j})">${content}</td>`
 		}
 		strHTML += '</tr>'
 	}
@@ -72,8 +73,14 @@ function minesAroundCount(cellI, cellJ) {
 		for (var j = cellJ - 1; j <= cellJ + 1; j++) {
 			if (j < 0 || j >= gBoard[i].length) continue
 			if (i === cellI && j === cellJ) continue
-			if (gBoard[i][j].isMine)count++
+			if (gBoard[i][j].isMine) count++
 		}
 	}
 	return count
+}
+
+function onCellClicked(elCell, i, j) {
+	gBoard[i][j].isRevealed=true
+	renderBoard()
+
 }
