@@ -6,6 +6,14 @@ var gLevel = {
 	MINES: 2
 }
 
+var gGame = {
+	isOn: false,
+	isFirstClick: true,
+	revealedCount: 0,
+	markedCount: 0,
+	secsPassed: 0
+}
+
 function init() {
 	gBoard = buildBoard()
 	setMinesNegsCount()
@@ -29,8 +37,7 @@ function buildBoard() {
 			}
 		}
 	}
-	board[1][1].isMine = true
-	board[3][3].isMine = true
+
 	return board
 }
 
@@ -41,7 +48,7 @@ function renderBoard() {
 		for (var j = 0; j < gBoard.length; j++) {
 			const cell = gBoard[i][j]
 			const className = `cell cell-${i}-${j}`
-			var content=''
+			var content = ''
 			if (cell.isRevealed) {
 				if (cell.isMine) content = mine
 				else content = cell.minesAroundCount
@@ -80,7 +87,52 @@ function minesAroundCount(cellI, cellJ) {
 }
 
 function onCellClicked(elCell, i, j) {
-	gBoard[i][j].isRevealed=true
-	renderBoard()
+	if (gGame.isFirstClick) {
+		gGame.isOn = true
+		placeMines()
+		setMinesNegsCount()
+		gGame.isFirstClick = false
+	}
 
+	if (!gGame.isOn) return
+
+	gBoard[i][j].isRevealed = true
+	renderBoard()
+}
+
+function placeMines() {
+	for (let i = 0; i < gLevel.MINES; i++) {
+		var cell = getRandomEmptyCell()
+		if (!cell) return
+		gBoard[cell.i][cell.j].isMine = true
+
+	}
+}
+
+function getEmptyCells() {
+	var emptyCells = []
+
+	for (var i = 0; i < gBoard.length; i++) {
+		for (var j = 0; j < gBoard[0].length; j++) {
+			if (!gBoard[i][j].isMine) {
+				emptyCells.push({ i, j })
+			}
+		}
+	}
+
+	return emptyCells
+}
+
+function getRandomEmptyCell() {
+	const emptyCells = getEmptyCells()
+	if (emptyCells.length === 0) return null
+
+	const idx = getRandomInt(0, emptyCells.length)
+	return emptyCells[idx]
+}
+
+function getRandomInt(min, max) {
+	const minCeiled = Math.ceil(min);
+	const maxFloored = Math.floor(max);
+	return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
 }
