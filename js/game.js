@@ -123,6 +123,10 @@ function getEmptyCells() {
 	return emptyCells
 }
 
+function checkGameOver() {
+	
+}
+
 function getRandomEmptyCell() {
 	const emptyCells = getEmptyCells()
 	if (emptyCells.length === 0) return null
