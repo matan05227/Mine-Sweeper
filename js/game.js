@@ -6,12 +6,19 @@ var gLevel = {
 	MINES: 2
 }
 
+var smiley_win = '😄'
+var smiley_3_lives = '😊'
+var smiley_2_lives = '😐'
+var smiley_1_lives = '😕'
+var smiley_lose = '😔'
+
 var gGame = {
 	isOn: false,
 	isFirstClick: true,
 	revealedCount: 0,
 	markedCount: 0,
-	secsPassed: 0
+	secsPassed: 0,
+	livesCount: 3
 }
 
 function init() {
@@ -19,6 +26,8 @@ function init() {
 	setMinesNegsCount()
 	console.table(gBoard)
 	renderBoard()
+	renderLives()
+	renderSmileys()
 }
 
 function buildBoard() {
@@ -55,7 +64,7 @@ function renderBoard() {
 			}
 
 
-			strHTML += `<td class="${className}" onclick="onCellClicked(this,${i}, ${j})">${content}</td>`
+			strHTML += `<td class="${className}" onclick="onCellClicked(this,${i}, ${j})"  oncontextmenu="onCellMarked(this,i,j)">${content}</td>`
 		}
 		strHTML += '</tr>'
 	}
@@ -95,9 +104,17 @@ function onCellClicked(elCell, i, j) {
 	}
 
 	if (!gGame.isOn) return
+	if (gBoard[i][j].isMine) {
+		gGame.livesCount--
+		renderLives()
+	}
 
 	gBoard[i][j].isRevealed = true
 	renderBoard()
+}
+
+function onCellMarked(elCell, i, j) {
+
 }
 
 function placeMines() {
@@ -124,7 +141,7 @@ function getEmptyCells() {
 }
 
 function checkGameOver() {
-	
+
 }
 
 function getRandomEmptyCell() {
@@ -139,4 +156,23 @@ function getRandomInt(min, max) {
 	const minCeiled = Math.ceil(min);
 	const maxFloored = Math.floor(max);
 	return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+}
+
+function showNegsAruond() {
+
+}
+
+function renderLives() {
+	var elLives = document.querySelector('.lives')
+	elLives.innerText = '❤️'.repeat(gGame.livesCount)
+}
+
+function renderSmileys() {
+	var elSmiley = document.querySelector('.smiley')
+	elSmiley.innerText = smiley_3_lives
+
+	if (gGame.livesCount === 2) elSmiley.innerText = smiley_2_lives
+	if (gGame.livesCount === 1) elSmiley.innerText = smiley_1_lives
+	if (gGame.livesCount === 0) elSmiley.innerText = smiley_lose
+	
 }
