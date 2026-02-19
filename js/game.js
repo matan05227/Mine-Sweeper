@@ -3,9 +3,10 @@ var gBoard
 var mine = '💣'
 var gLevel = {
 	SIZE: 4,
-	MINES: 2
+	MINES: 4
 }
 
+var marked = '🏴'
 var smiley_win = '😄'
 var smiley_3_lives = '😊'
 var smiley_2_lives = '😐'
@@ -18,16 +19,17 @@ var gGame = {
 	revealedCount: 0,
 	markedCount: 0,
 	secsPassed: 0,
-	livesCount: 3
+	livesCount: 3,
 }
 
 function init() {
 	gBoard = buildBoard()
+	placeMines()
 	setMinesNegsCount()
-	console.table(gBoard)
 	renderBoard()
 	renderLives()
 	renderSmileys()
+	gGame.isOn = true
 }
 
 function buildBoard() {
@@ -62,9 +64,8 @@ function renderBoard() {
 				if (cell.isMine) content = mine
 				else content = cell.minesAroundCount
 			}
-
-
-			strHTML += `<td class="${className}" onclick="onCellClicked(this,${i}, ${j})"  oncontextmenu="onCellMarked(this,i,j)">${content}</td>`
+			if (cell.isMarked) content = marked
+			strHTML += `<td class="${className}" onclick="onCellClicked(this,${i}, ${j})"  oncontextmenu="onCellMarked(this,${i}, ${j}, event)">${content}</td>`
 		}
 		strHTML += '</tr>'
 	}
@@ -96,25 +97,29 @@ function minesAroundCount(cellI, cellJ) {
 }
 
 function onCellClicked(elCell, i, j) {
-	if (gGame.isFirstClick) {
-		gGame.isOn = true
-		placeMines()
-		setMinesNegsCount()
-		gGame.isFirstClick = false
-	}
-
 	if (!gGame.isOn) return
 	if (gBoard[i][j].isMine) {
 		gGame.livesCount--
 		renderLives()
+		renderSmileys()
+		checkGameOver()
 	}
 
 	gBoard[i][j].isRevealed = true
+	gGame.revealedCount++
+	showNegsAruond({ i, j })
 	renderBoard()
+	checkGameWin()
 }
 
-function onCellMarked(elCell, i, j) {
+function onCellMarked(elCell, i, j, ev) {
+	ev.preventDefault()
+	var cell = gBoard[i][j]
 
+	cell.isMarked = !cell.isMarked
+	gGame.markedCount += cell.isMarked ? 1 : -1
+	renderBoard()
+	checkGameWin()
 }
 
 function placeMines() {
@@ -140,8 +145,24 @@ function getEmptyCells() {
 	return emptyCells
 }
 
-function checkGameOver() {
+function checkGameWin() {
+	var elModal = document.querySelector('.modal')
+	if (gGame.revealedCount + gGame.markedCount === gLevel.SIZE ** 2 && gGame.markedCount === gLevel.MINES) {
+		var win = document.querySelector('.smiley')
+		win.innerText = smiley_win
+		elModal.innerHTML="Win"
+		elModal.showModal()
+	}
 
+}
+
+function checkGameOver() {
+	if (gGame.livesCount > 0) return
+	var elModal = document.querySelector('.modal')
+	gGame.isOn = false
+	elModal.innerHTML="Lose"
+	elModal.showModal()
+	renderSmileys()
 }
 
 function getRandomEmptyCell() {
@@ -158,9 +179,21 @@ function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
 }
 
-function showNegsAruond() {
-
+function showNegsAruond(pos) {
+	for (var i = pos.i - 1; i <= pos.i + 1; i++) {
+		if (i < 0 || i >= gBoard.length) continue
+		for (var j = pos.j - 1; j <= pos.j + 1; j++) {
+			if (j < 0 || j >= gBoard[i].length) continue
+			if (i === pos.i && j === pos.j) continue
+			if (gBoard[i][j].isMine) continue
+			if (!gBoard[i][j].isRevealed) {
+				gBoard[i][j].isRevealed = true
+				gGame.revealedCount++
+			}
+		}
+	}
 }
+
 
 function renderLives() {
 	var elLives = document.querySelector('.lives')
@@ -174,5 +207,5 @@ function renderSmileys() {
 	if (gGame.livesCount === 2) elSmiley.innerText = smiley_2_lives
 	if (gGame.livesCount === 1) elSmiley.innerText = smiley_1_lives
 	if (gGame.livesCount === 0) elSmiley.innerText = smiley_lose
-	
+
 }

@@ -5,7 +5,8 @@ body {
 table {
     border-collapse: collapse;
 }
-td{
+
+td {
     border: 1px solid black;
     text-align: center;
     width: 80px;
@@ -16,4 +17,31 @@ td{
 .footer {
     margin: 10px auto;
     text-align: center;
+    margin-left: -420px;
+}
+
+.modal {
+    width: 200px;
+    height: 100px;
+    text-align: center;
+    color: blue;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    position: absolute;
+    top: -100px;
+    margin-left: 60px;
+}
+
+.smiley {
+    margin-left: 315px;
+}
+
+.lives {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
