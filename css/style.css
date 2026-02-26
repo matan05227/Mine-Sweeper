@@ -2,6 +2,48 @@ body {
     background-color: blanchedalmond;
 }
 
+h1 {
+    text-align: center;
+    color: blue;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color: yellow;
+    padding: 5px;
+    border-radius: 2rem;
+    box-shadow: 0px 3px 4px 1px;
+    text-shadow: black 1px 1px 1px;
+}
+
+.levels {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 5px;
+}
+
+.levels > * {
+    padding: 5px;
+    font-weight: bold;
+    border-radius: 15px;
+    border: 2px solid rgb(72, 72, 72);
+    cursor: pointer;
+}
+
+.levels > *:first-child {
+    background-color: green;
+}
+
+.levels > *:nth-child(2) {
+    background-color: orange;
+}
+
+.levels > *:last-child {
+    background-color: red;
+}
+
+.game {
+    width: max-content;
+    margin: auto;
+}
+
 table {
     border-collapse: collapse;
 }
@@ -9,15 +51,24 @@ table {
 td {
     border: 1px solid black;
     text-align: center;
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     background-color: lightblue;
+    transition: 0.2s;
+}
+
+td.revealed {
+    background-color: blue;
+    color: white;
+}
+
+td:hover {
+    box-shadow: inset white 0px 0px 15px 0px;
+    cursor: pointer;
 }
 
 .footer {
-    margin: 10px auto;
     text-align: center;
-    margin-left: -420px;
 }
 
 .modal {
@@ -36,12 +87,13 @@ td {
     margin-left: 60px;
 }
 
-.smiley {
-    margin-left: 315px;
+.top-bar {
+    display: flex;
 }
 
-.lives {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+.smiley {
+    /* display: inline; */
+    margin-inline-start: auto;
+    /* display: inline; */
+    /* margin-left: 315px; */
 }

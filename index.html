@@ -1,20 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <title>Document</title>
 </head>
-<body onload="init()">
- 
+
+<body onload="onInit()">
+
     <h1>Mine Sweeper</h1>
-<div class="lives"></div>
-<div class="smiley"></div>
-<dialog class="modal"></dialog>
-    <div class="game-container"></div>
-<div class="footer">Matan</div>
+    <div class="game">
+        <div class="levels">
+            <button onclick="onInit(1)">Easy</button>
+            <button onclick="onInit(2)">Normal</button>
+            <button onclick="onInit(3)">Difficult</button>
+        </div>
+        <div class="top-bar">
+            <div class="lives"></div>
+            <div class="smiley"></div>
+        </div>
+        <div class="game-container"></div>
+    </div>
+    <dialog class="modal"></dialog>
+    <div class="footer">Matan</div>
 
     <script src="js/game.js"></script>
 </body>
+
 </html>

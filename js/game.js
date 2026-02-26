@@ -1,12 +1,12 @@
 'use strict'
 var gBoard
-var mine = '💣'
 var gLevel = {
 	SIZE: 4,
 	MINES: 4
 }
 
-var marked = '🏴'
+var mine = '💣'
+var MARKED = '🏴'
 var smiley_win = '😄'
 var smiley_3_lives = '😊'
 var smiley_2_lives = '😐'
@@ -22,7 +22,8 @@ var gGame = {
 	livesCount: 3,
 }
 
-function init() {
+function onInit(diff = 1) {
+	setLevel(diff)
 	gBoard = buildBoard()
 	placeMines()
 	setMinesNegsCount()
@@ -58,13 +59,15 @@ function renderBoard() {
 		strHTML += '<tr>'
 		for (var j = 0; j < gBoard.length; j++) {
 			const cell = gBoard[i][j]
-			const className = `cell cell-${i}-${j}`
+			var className = `cell cell-${i}-${j}`
 			var content = ''
 			if (cell.isRevealed) {
 				if (cell.isMine) content = mine
 				else content = cell.minesAroundCount
+
+				className += ' revealed'
 			}
-			if (cell.isMarked) content = marked
+			if (cell.isMarked) content = MARKED
 			strHTML += `<td class="${className}" onclick="onCellClicked(this,${i}, ${j})"  oncontextmenu="onCellMarked(this,${i}, ${j}, event)">${content}</td>`
 		}
 		strHTML += '</tr>'
@@ -73,6 +76,21 @@ function renderBoard() {
 	var elContainer = document.querySelector('.game-container')
 	elContainer.innerHTML = strHTML
 
+}
+
+function setLevel(diff) {
+	if (diff === 1) {
+		gLevel = { SIZE: 4, MINES: 4 }
+		gGame.livesCount = 3
+	}
+	else if (diff === 2) {
+		gLevel = { SIZE: 7, MINES: 6 }
+		gGame.livesCount = 4
+	}
+	else if (diff === 3) {
+		gLevel = { SIZE: 10, MINES: 8 }
+		gGame.livesCount = 5
+	}
 }
 
 function setMinesNegsCount() {
@@ -150,7 +168,7 @@ function checkGameWin() {
 	if (gGame.revealedCount + gGame.markedCount === gLevel.SIZE ** 2 && gGame.markedCount === gLevel.MINES) {
 		var win = document.querySelector('.smiley')
 		win.innerText = smiley_win
-		elModal.innerHTML="Win"
+		elModal.innerHTML = "Win"
 		elModal.showModal()
 	}
 
@@ -160,7 +178,7 @@ function checkGameOver() {
 	if (gGame.livesCount > 0) return
 	var elModal = document.querySelector('.modal')
 	gGame.isOn = false
-	elModal.innerHTML="Lose"
+	elModal.innerHTML = "Lose"
 	elModal.showModal()
 	renderSmileys()
 }
